@@ -1,7 +1,7 @@
 package com.huuloc.simplejwtauth.controller;
 
-import com.huuloc.simplejwtauth.dto.AuthenticationRequest;
-import com.huuloc.simplejwtauth.dto.AuthenticationResponse;
+import com.huuloc.simplejwtauth.dto.auth.AuthenticationRequest;
+import com.huuloc.simplejwtauth.dto.auth.AuthenticationResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;

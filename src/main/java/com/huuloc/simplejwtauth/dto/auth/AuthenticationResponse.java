@@ -1,4 +1,4 @@
-package com.huuloc.simplejwtauth.dto;
+package com.huuloc.simplejwtauth.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
