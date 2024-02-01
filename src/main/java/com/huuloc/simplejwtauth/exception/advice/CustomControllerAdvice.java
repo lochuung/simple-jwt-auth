@@ -3,6 +3,8 @@ package com.huuloc.simplejwtauth.exception.advice;
 import com.huuloc.simplejwtauth.exception.BadRequestException;
 import com.huuloc.simplejwtauth.exception.ErrorMessage;
 import com.huuloc.simplejwtauth.exception.UnauthorizedException;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,6 +16,7 @@ import java.time.LocalDateTime;
 
 @ControllerAdvice
 @ResponseBody
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class CustomControllerAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler({BadRequestException.class})
     public ResponseEntity<Object> badRequest(BadRequestException e) {

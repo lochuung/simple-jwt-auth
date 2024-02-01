@@ -1,31 +1,41 @@
 package com.huuloc.simplejwtauth.configuration;
 
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSSigner;
+import com.nimbusds.jose.KeyLengthException;
+import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.jwk.*;
+import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.security.*;
 import java.security.interfaces.RSAPublicKey;
 import java.util.UUID;
 
 @Configuration
+@Slf4j
 public class SecurityConfiguration {
-    @Value("${jwt.algorithm:RSA}")
-    private String jwtAlgorithm;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -35,43 +45,49 @@ public class SecurityConfiguration {
                                 .anyRequest().authenticated()
         );
 
+        http.oauth2ResourceServer(config -> {
+                    config.jwt(Customizer.withDefaults());
+                }
+        );
+
         http.csrf(AbstractHttpConfigurer::disable);
 
         http.httpBasic(Customizer.withDefaults());
-
-        http.oauth2ResourceServer(config ->
-                config.jwt(Customizer.withDefaults()));
 
         return http.build();
     }
 
     @Bean
+    PasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
+            throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+
+    @Bean
     public KeyPair keyPair() throws NoSuchAlgorithmException {
-        if (jwtAlgorithm == null ||
-                !jwtAlgorithm.equalsIgnoreCase("HMAC")) {
-            jwtAlgorithm = "RSA";
-        }
-        if (jwtAlgorithm.equalsIgnoreCase("HMAC")) {
-            return KeyPairGenerator.getInstance("HmacSHA256")
-                    .generateKeyPair();
-        }
         KeyPairGenerator keyPairGenerator = KeyPairGenerator
-                .getInstance(jwtAlgorithm);
+                .getInstance("RSA");
         keyPairGenerator.initialize(2048);
         return keyPairGenerator.generateKeyPair();
     }
 
     @Bean
     public RSAKey rsaKey(KeyPair keyPair) {
-        return new RSAKey
+        RSAKey.Builder builder = new RSAKey
                 .Builder((RSAPublicKey) keyPair.getPublic())
                 .privateKey(keyPair.getPrivate())
-                .keyID(UUID.randomUUID().toString())
-                .build();
+                .keyID(UUID.randomUUID().toString());
+        return builder.build();
     }
 
     @Bean
-    JWKSource<SecurityContext> jwkSource(RSAKey rsaKey) {
+    JWKSource<SecurityContext> jwkSource(RSAKey rsaKey) throws KeyLengthException, NoSuchAlgorithmException {
+        log.debug("rsa key: {}", rsaKey);
         return (jwkSelector, securityContext) -> jwkSelector.select(
                 new JWKSet(rsaKey)
         );

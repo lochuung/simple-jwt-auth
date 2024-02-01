@@ -23,5 +23,5 @@ public class UserDto {
     private boolean enabled;
     private boolean isUsing2FA;
     private String secret;
-    private List<Role> roles;
+    private List<RoleDto> roles;
 }
