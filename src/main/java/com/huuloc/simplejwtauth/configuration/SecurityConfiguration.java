@@ -1,5 +1,7 @@
 package com.huuloc.simplejwtauth.configuration;
 
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,14 +20,15 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
+import java.util.UUID;
 
 @Configuration
 public class SecurityConfiguration {
-    @Value("${jwt.algorithm:RS256}")
-    private String ALGORITHM;
+    @Value("${jwt.algorithm:RSA}")
+    private String jwtAlgorithm;
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(
                 auth ->
                         auth.requestMatchers("/api/auth/**").permitAll()
@@ -43,12 +46,44 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    JwtEncoder jwtEncoder(JWKSource<SecurityContext> jwkSource) {
+    public KeyPair keyPair() throws NoSuchAlgorithmException {
+        if (jwtAlgorithm == null ||
+                !jwtAlgorithm.equalsIgnoreCase("HMAC")) {
+            jwtAlgorithm = "RSA";
+        }
+        if (jwtAlgorithm.equalsIgnoreCase("HMAC")) {
+            return KeyPairGenerator.getInstance("HmacSHA256")
+                    .generateKeyPair();
+        }
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator
+                .getInstance(jwtAlgorithm);
+        keyPairGenerator.initialize(2048);
+        return keyPairGenerator.generateKeyPair();
+    }
+
+    @Bean
+    public RSAKey rsaKey(KeyPair keyPair) {
+        return new RSAKey
+                .Builder((RSAPublicKey) keyPair.getPublic())
+                .privateKey(keyPair.getPrivate())
+                .keyID(UUID.randomUUID().toString())
+                .build();
+    }
+
+    @Bean
+    JWKSource<SecurityContext> jwkSource(RSAKey rsaKey) {
+        return (jwkSelector, securityContext) -> jwkSelector.select(
+                new JWKSet(rsaKey)
+        );
+    }
+
+    @Bean
+    public JwtEncoder jwtEncoder(JWKSource<SecurityContext> jwkSource) {
         return new NimbusJwtEncoder(jwkSource);
     }
 
     @Bean
-    JwtDecoder jwtDecoder(KeyPair keyPair) {
+    public JwtDecoder jwtDecoder(KeyPair keyPair) {
         return NimbusJwtDecoder
                 .withPublicKey((RSAPublicKey) keyPair.getPublic())
                 .build();
