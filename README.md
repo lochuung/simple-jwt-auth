@@ -4,7 +4,7 @@ This is a simple Spring Boot application that demonstrates how to implement user
 JSON Web Tokens (JWT) in Spring Boot OAuth2 Resource Server and Spring Security.
 The application also includes a access token and refresh token functionality.
 
- :star: If you find ToolJet useful, please consider giving us a star on GitHub! Your support helps us continue to innovate and deliver exciting features.
+ :star: If you find this project useful, please consider giving us a star on GitHub! Your support helps us continue to innovate and deliver exciting features.
 
 ![Number of GitHub contributors](https://img.shields.io/github/contributors/lochuung/simple-jwt-auth)
 [![Number of GitHub issues that are open](https://img.shields.io/github/issues/lochuung/simple-jwt-auth)](https://github.com/lochuung/simple-jwt-auth/issues)
