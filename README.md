@@ -20,27 +20,27 @@ The application also includes a access token and refresh token functionality.
 ## Setup and Running
 
 1. Clone the repository
-2. Navigate to the project directory
-3. Run the application using the command `./mvnw spring-boot:run`
-4. Edit the `application.properties` file to configure the database and JWT information:
-    ```properties
-    # ===============================
-    # = JWT CONFIGURATION
-    # ===============================
-    # Below are the configurations for JWT
-    
-    # JWT Access Token Expiration Time
-    jwt.access-token.expiration-time=3600
-    # JWT Refresh Token Expiration Time
-    jwt.refresh-token.expiration-time=86400
-    
-    # ===============================
-    # = SERVER
-    # ===============================
-    # Set here configurations for the web server
-    
-    server.port=8080
-    ```
+2. Edit the `application.properties` file to configure the database and JWT information:
+```properties
+# ===============================
+# = JWT CONFIGURATION
+# ===============================
+# Below are the configurations for JWT
+
+# JWT Access Token Expiration Time
+jwt.access-token.expiration-time=3600
+# JWT Refresh Token Expiration Time
+jwt.refresh-token.expiration-time=86400
+
+# ===============================
+# = SERVER
+# ===============================
+# Set here configurations for the web server
+
+server.port=8080
+```
+3. Navigate to the project directory
+4. Run the application using the command `./mvnw spring-boot:run`
 
 ## API Endpoints
 
