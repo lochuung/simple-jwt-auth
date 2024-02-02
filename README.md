@@ -4,6 +4,20 @@ This is a simple Spring Boot application that demonstrates how to implement user
 JSON Web Tokens (JWT) in Spring Boot OAuth2 Resource Server and Spring Security.
 The application also includes a access token and refresh token functionality.
 
+ :star: If you find ToolJet useful, please consider giving us a star on GitHub! Your support helps us continue to innovate and deliver exciting features.
+
+![Number of GitHub contributors](https://img.shields.io/github/contributors/lochuung/simple-jwt-auth)
+[![Number of GitHub issues that are open](https://img.shields.io/github/issues/lochuung/simple-jwt-auth)](https://github.com/lochuung/simple-jwt-auth/issues)
+[![Number of GitHub stars](https://img.shields.io/github/stars/lochuung/simple-jwt-auth)](https://github.com/lochuung/simple-jwt-auth/stargazers)
+![Number of GitHub closed issues](https://img.shields.io/github/issues-closed/lochuung/simple-jwt-auth)
+![Number of GitHub pull requests that are open](https://img.shields.io/github/issues-pr-raw/lochuung/simple-jwt-auth)
+![GitHub release; latest by date](https://img.shields.io/github/v/release/lochuung/simple-jwt-auth)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/lochuung/simple-jwt-auth)
+[![GitHub license which is APGL license](https://img.shields.io/github/license/lochuung/simple-jwt-auth)](https://github.com/lochuung/simple-jwt-auth)
+[![Follow me on Facebook](https://img.shields.io/badge/Facebook-Connect-brightgreen?style=social&logo=facebook)](https://facebook.com/lochuung)
+
+
+
 ## Built With
 
 - [Spring Boot](https://spring.io/projects/spring-boot)
