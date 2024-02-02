@@ -1,7 +1,6 @@
 package com.huuloc.simplejwtauth.dto;
 
-import com.huuloc.simplejwtauth.entity.Role;
-import jakarta.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -7,9 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class SimplejwtauthApplication {
+public class SimpleJwtAuthApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(SimplejwtauthApplication.class, args);
+		SpringApplication.run(SimpleJwtAuthApplication.class, args);
 	}
 
 	@Bean

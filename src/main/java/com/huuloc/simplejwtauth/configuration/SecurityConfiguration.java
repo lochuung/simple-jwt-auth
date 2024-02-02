@@ -1,15 +1,10 @@
 package com.huuloc.simplejwtauth.configuration;
 
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSSigner;
-import com.nimbusds.jose.KeyLengthException;
-import com.nimbusds.jose.crypto.MACSigner;
-import com.nimbusds.jose.jwk.*;
-import com.nimbusds.jose.jwk.source.ImmutableSecret;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,11 +20,9 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
-import java.security.*;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.UUID;
 
@@ -45,9 +38,7 @@ public class SecurityConfiguration {
                                 .anyRequest().authenticated()
         );
 
-        http.oauth2ResourceServer(config -> {
-                    config.jwt(Customizer.withDefaults());
-                }
+        http.oauth2ResourceServer(config -> config.jwt(Customizer.withDefaults())
         );
 
         http.csrf(AbstractHttpConfigurer::disable);
@@ -86,7 +77,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    JWKSource<SecurityContext> jwkSource(RSAKey rsaKey) throws KeyLengthException, NoSuchAlgorithmException {
+    JWKSource<SecurityContext> jwkSource(RSAKey rsaKey) {
         log.debug("rsa key: {}", rsaKey);
         return (jwkSelector, securityContext) -> jwkSelector.select(
                 new JWKSet(rsaKey)
