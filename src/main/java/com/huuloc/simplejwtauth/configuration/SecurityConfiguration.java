@@ -12,6 +12,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -38,7 +39,14 @@ public class SecurityConfiguration {
                                 .anyRequest().authenticated()
         );
 
-        http.oauth2ResourceServer(config -> config.jwt(Customizer.withDefaults())
+        http.oauth2ResourceServer(config ->
+                config.jwt(Customizer.withDefaults())
+        );
+
+        http.sessionManagement(configurer ->
+                configurer.sessionCreationPolicy(
+                        SessionCreationPolicy.STATELESS
+                )
         );
 
         http.csrf(AbstractHttpConfigurer::disable);
